@@ -1,0 +1,9 @@
+.DS_Store
+.build/
+dist/
+outputs/
+docs/superpowers/
+*.app
+*.app.backup
+*.xcuserstate
+DerivedData/
