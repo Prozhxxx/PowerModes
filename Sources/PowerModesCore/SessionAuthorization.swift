@@ -16,7 +16,7 @@ public enum SessionAuthorizationBuilder {
     public static let helperPath = "/Library/PrivilegedHelperTools/io.z.powermodes.helper"
 
     public static func sudoersPath(pid: Int) -> String {
-        "/private/etc/sudoers.d/io.z.powermodes-session-\(pid)"
+        "/private/etc/sudoers.d/io-z-powermodes-session-\(pid)"
     }
 
     public static func applyArguments(for preset: PowerPreset) throws -> [String] {

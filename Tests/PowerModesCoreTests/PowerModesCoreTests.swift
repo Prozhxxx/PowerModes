@@ -6,8 +6,12 @@ import Testing
     let presets = PowerPreset.builtIns
     #expect(presets.map(\.name) == ["正常模式", "长任务模式", "合盖任务模式"])
     #expect(presets[0].allowLidAwake == false)
-    #expect(presets[0].batteryDisplaySleepMinutes == 10)
-    #expect(presets[0].acDisplaySleepMinutes == 20)
+    #expect(presets[0].batteryDisplaySleepMinutes == 15)
+    #expect(presets[0].acDisplaySleepMinutes == 30)
+    #expect(presets[1].batteryDisplaySleepMinutes == 10)
+    #expect(presets[1].acDisplaySleepMinutes == 20)
+    #expect(presets[2].batteryDisplaySleepMinutes == 3)
+    #expect(presets[2].acDisplaySleepMinutes == 10)
     #expect(presets[2].allowLidAwake == true)
 }
 
@@ -33,7 +37,7 @@ import Testing
     }
 }
 
-@Test func presetStoreMigratesNormalModeTimesOnce() throws {
+@Test func presetStoreMigratesNormalAndLongTaskTimesOnce() throws {
     let suite = "PowerModesMigrationTests-\(UUID())"
     let defaults = try #require(UserDefaults(suiteName: suite))
     defer { defaults.removePersistentDomain(forName: suite) }
@@ -41,11 +45,17 @@ import Testing
     var legacy = PowerPreset.builtIns
     legacy[0].batteryDisplaySleepMinutes = 7
     legacy[0].acDisplaySleepMinutes = 5
+    legacy[1].batteryDisplaySleepMinutes = 5
+    legacy[1].acDisplaySleepMinutes = 5
     try store.save(legacy)
 
     let migrated = try store.load()
-    #expect(migrated[0].batteryDisplaySleepMinutes == 10)
-    #expect(migrated[0].acDisplaySleepMinutes == 20)
+    #expect(migrated[0].batteryDisplaySleepMinutes == 15)
+    #expect(migrated[0].acDisplaySleepMinutes == 30)
+    #expect(migrated[1].batteryDisplaySleepMinutes == 10)
+    #expect(migrated[1].acDisplaySleepMinutes == 20)
+    #expect(migrated[2].batteryDisplaySleepMinutes == 3)
+    #expect(migrated[2].acDisplaySleepMinutes == 10)
 
     var customized = migrated
     customized[0].acDisplaySleepMinutes = 30
@@ -57,7 +67,7 @@ import Testing
     let preset = PowerPreset.builtIns[0]
     #expect(try SessionAuthorizationBuilder.applyArguments(for: preset) == [
         "-n", "/Library/PrivilegedHelperTools/io.z.powermodes.helper",
-        "apply", "10", "20", "1", "0"
+        "apply", "15", "30", "1", "0"
     ])
     #expect(SessionAuthorizationBuilder.cleanupArguments(pid: 4321) == [
         "-n", "/Library/PrivilegedHelperTools/io.z.powermodes.helper", "cleanup", "4321"
@@ -71,7 +81,9 @@ import Testing
         pid: 4321
     )
     #expect(command.contains("/Library/PrivilegedHelperTools/io.z.powermodes.helper"))
-    #expect(command.contains("/private/etc/sudoers.d/io.z.powermodes-session-4321"))
+    #expect(command.contains("/private/etc/sudoers.d/io-z-powermodes-session-4321"))
+    let ruleName = URL(fileURLWithPath: SessionAuthorizationBuilder.sudoersPath(pid: 4321)).lastPathComponent
+    #expect(!ruleName.contains("."))
     #expect(command.contains("/usr/sbin/visudo -cf"))
     #expect(command.contains("/bin/kill -0 4321"))
     #expect(command.contains("/usr/bin/nohup"))

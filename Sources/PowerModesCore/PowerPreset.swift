@@ -36,8 +36,8 @@ public struct PowerPreset: Codable, Equatable, Identifiable, Sendable {
     }
 
     public static let builtIns: [PowerPreset] = [
-        PowerPreset(name: "正常模式", batteryDisplaySleepMinutes: 10, acDisplaySleepMinutes: 20, allowSystemSleep: true, allowLidAwake: false, duration: .infinite),
-        PowerPreset(name: "长任务模式", batteryDisplaySleepMinutes: 5, acDisplaySleepMinutes: 5, allowSystemSleep: false, allowLidAwake: false, duration: .minutes(120)),
-        PowerPreset(name: "合盖任务模式", batteryDisplaySleepMinutes: 1, acDisplaySleepMinutes: 1, allowSystemSleep: false, allowLidAwake: true, duration: .minutes(60))
+        PowerPreset(name: "正常模式", batteryDisplaySleepMinutes: 15, acDisplaySleepMinutes: 30, allowSystemSleep: true, allowLidAwake: false, duration: .infinite),
+        PowerPreset(name: "长任务模式", batteryDisplaySleepMinutes: 10, acDisplaySleepMinutes: 20, allowSystemSleep: false, allowLidAwake: false, duration: .minutes(120)),
+        PowerPreset(name: "合盖任务模式", batteryDisplaySleepMinutes: 3, acDisplaySleepMinutes: 10, allowSystemSleep: false, allowLidAwake: true, duration: .minutes(60))
     ]
 }
